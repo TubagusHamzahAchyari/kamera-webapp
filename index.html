@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Web Kamera</title>
+  <style>
+    body {
+      font-family: sans-serif;
+      text-align: center;
+      padding: 20px;
+    }
+    video, canvas, img {
+      width: 100%;
+      max-width: 500px;
+      border-radius: 12px;
+      margin-top: 10px;
+    }
+    button {
+      padding: 10px 20px;
+      font-size: 16px;
+      margin-top: 10px;
+      cursor: pointer;
+    }
+  </style>
+</head>
+<body>
+  <h2>Ambil Gambar dari Kamera</h2>
+  <video id="video" autoplay playsinline></video>
+  <br>
+  <button id="captureBtn">Ambil Gambar</button>
+  <canvas id="canvas" style="display: none;"></canvas>
+  <h3>Hasil:</h3>
+  <img id="photo" src="" alt="Hasil foto akan muncul di sini" />
+
+  <script>
+    const video = document.getElementById('video');
+    const canvas = document.getElementById('canvas');
+    const photo = document.getElementById('photo');
+    const captureBtn = document.getElementById('captureBtn');
+
+    navigator.mediaDevices.getUserMedia({ video: true })
+      .then(stream => {
+        video.srcObject = stream;
+      })
+      .catch(err => {
+        alert('Gagal mengakses kamera: ' + err.message);
+      });
+
+    captureBtn.addEventListener('click', () => {
+      canvas.width = video.videoWidth;
+      canvas.height = video.videoHeight;
+      canvas.getContext('2d').drawImage(video, 0, 0, canvas.width, canvas.height);
+      const dataURL = canvas.toDataURL('image/png');
+      photo.src = dataURL;
+    });
+  </script>
+</body>
+</html>
